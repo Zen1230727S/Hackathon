@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Attendance Management System</title>
+  <meta name="description" content="Face recognition based classroom attendance, analytics and an attendance recovery planner. Hackathon prototype with fictional demo data." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%232f6bed'/%3E%3Ctext x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Arial'%3E%E2%9C%93%3C/text%3E%3C/svg%3E" />
+
+  <!-- Google Fonts is optional; the app falls back to system fonts when offline. -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="./assets/css/styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+
+    <!-- ============================ SIDEBAR ============================ -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">SA</div>
+        <div class="brand-text">
+          <strong>Smart Attendance</strong>
+          <span>Management System</span>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Main navigation">
+        <p class="nav-label">Overview</p>
+        <a class="nav-item" href="#/dashboard" data-route="dashboard">
+          <span class="nav-ico">▦</span><span>Dashboard</span>
+        </a>
+
+        <p class="nav-label">Attendance</p>
+        <a class="nav-item" href="#/attendance" data-route="attendance">
+          <span class="nav-ico">☑</span><span>Take Attendance</span>
+        </a>
+        <a class="nav-item" href="#/face" data-route="face">
+          <span class="nav-ico">◉</span><span>Face Attendance</span>
+        </a>
+        <a class="nav-item" href="#/enrollment" data-route="enrollment">
+          <span class="nav-ico">✚</span><span>Face Enrollment</span>
+        </a>
+
+        <p class="nav-label">People &amp; Insights</p>
+        <a class="nav-item" href="#/students" data-route="students">
+          <span class="nav-ico">☺</span><span>Students</span>
+        </a>
+        <a class="nav-item" href="#/analytics" data-route="analytics">
+          <span class="nav-ico">∿</span><span>Analytics</span>
+        </a>
+        <a class="nav-item" href="#/reports" data-route="reports">
+          <span class="nav-ico">⇩</span><span>Reports</span>
+        </a>
+
+        <p class="nav-label">System</p>
+        <a class="nav-item" href="#/settings" data-route="settings">
+          <span class="nav-ico">⚙</span><span>Settings &amp; Demo</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-foot">
+        <p>Hackathon prototype · fictional demo data only.</p>
+      </div>
+    </aside>
+
+    <!-- ============================= MAIN ============================== -->
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Toggle navigation">☰</button>
+        <div class="topbar-title">
+          <h1 id="pageTitle">Dashboard</h1>
+          <p id="pageSubtitle">Loading…</p>
+        </div>
+        <div class="topbar-actions">
+          <span class="pill pill-soft" id="todayPill">—</span>
+          <div class="teacher-chip">
+            <span class="avatar" id="teacherAvatar">TR</span>
+            <span class="teacher-meta">
+              <strong id="teacherName">Teacher</strong>
+              <small id="teacherEmail">teacher@demo.college</small>
+            </span>
+          </div>
+        </div>
+      </header>
+
+      <main class="content" id="view" tabindex="-1"></main>
+
+      <footer class="app-foot">
+        <span>Smart Attendance Management System · local-first MVP</span>
+        <span>Privacy: real deployment would require consent, access control, retention rules and institutional/legal review.</span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <header class="modal-head">
+        <h2 id="modalTitle">Title</h2>
+        <button class="icon-btn" type="button" id="modalClose" aria-label="Close">✕</button>
+      </header>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="./vendor/face-api/face-api.js" defer></script>
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

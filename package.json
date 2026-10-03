@@ -1,0 +1,23 @@
+{
+  "name": "smart-attendance-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Smart Attendance Management System - face recognition attendance, analytics and an attendance recovery (what-if) planner. Hackathon prototype with fictional demo data.",
+  "type": "module",
+  "scripts": {
+    "setup": "node scripts/copy-vendor.mjs",
+    "start": "node server.js",
+    "dev": "node server.js",
+    "postinstall": "node scripts/copy-vendor.mjs"
+  },
+  "keywords": [
+    "attendance",
+    "face-recognition",
+    "dashboard",
+    "hackathon"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@vladmandic/face-api": "^1.7.15"
+  }
+}
