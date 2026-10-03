@@ -35,8 +35,9 @@ import {
 } from '../lib/store.js';
 import {
   el, esc, todayISO, formatDate, toast, round1, clamp,
+  statusBadge,
 } from '../lib/utils.js';
-import { cardHead, emptyState, callout, classOptions, sessionOptions, statusBadge } from '../lib/ui.js';
+import { cardHead, emptyState, callout, classOptions, sessionOptions } from '../lib/ui.js';
 import {
   loadModels, getEngineStatus, startCamera, stopCamera, describeCameraError,
   cameraSupported, cameraBlockedReason, detectFaces, findBestMatch, simulatedDescriptor,
