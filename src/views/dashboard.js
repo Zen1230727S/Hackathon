@@ -99,10 +99,13 @@ export function render() {
         onclick: () => { window.location.hash = `#/attendance?class=${session.classId}&session=${session.id}`; },
       }));
     }
-    root.append(el('section', { class: 'card' }, [
-      cardHead("Today's Sessions", 'Jump straight into an open session'),
+    const sessionsCard = el('section', { class: 'card' }, [
       el('div', { class: 'card-body' }, [chips]),
-    ]));
+    ]);
+    // cardHead() returns an HTML string - inject it via innerHTML (as the other
+    // cards do) so it renders as markup, not as literal text.
+    sessionsCard.insertAdjacentHTML('afterbegin', cardHead("Today's Sessions", 'Jump straight into an open session'));
+    root.append(sessionsCard);
   }
 
   /* ------------------------ Main grid: low attendance + feed --------------- */
