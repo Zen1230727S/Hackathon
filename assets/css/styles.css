@@ -717,10 +717,88 @@ body.is-student .topbar #logoutBtn { display: none; }
 body.is-login .content { width: 100%; max-width: 980px; margin: 0 auto; padding-top: 40px; }
 body.is-student .content { width: 100%; max-width: 1060px; margin: 0 auto; }
 
-.login-page { display: flex; justify-content: center; }
-.login-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; }
-.login-error { color: var(--danger-700); font-size: 12.8px; font-weight: 600; }
+/* ---- Login page: visual polish only (layout, type, spacing, inputs) ---- */
+/* Everything below is scoped to body.is-login so no other page is affected. */
+body.is-login .content { padding-top: 56px; padding-bottom: 56px; }
 
-@media (max-width: 760px) {
-  .login-grid { grid-template-columns: minmax(0, 1fr); }
+/* Page framing / visual hierarchy ---------------------------------------- */
+.login-page { display: flex; justify-content: center; align-items: flex-start; }
+.login-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 26px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* Card appearance --------------------------------------------------------- */
+body.is-login .card {
+  border-radius: var(--radius-xl);
+  border-color: var(--ink-200);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+body.is-login .card-head {
+  padding: 20px 22px 18px;
+  background: linear-gradient(180deg, var(--brand-50), var(--surface));
+  border-bottom: 1px solid var(--ink-100);
+  display: block;
+}
+body.is-login .card-head h2 { font-size: 17px; font-weight: 750; letter-spacing: -.01em; }
+body.is-login .card-head p { margin-top: 3px; font-size: 12.5px; color: var(--ink-500); }
+body.is-login .card-body { padding: 22px; gap: 18px; }
+
+/* Callout ----------------------------------------------------------------- */
+body.is-login .callout { line-height: 1.5; border-radius: 12px; padding: 14px 16px; }
+
+/* Fields, inputs & select ------------------------------------------------- */
+body.is-login .field { gap: 7px; }
+body.is-login .field > label { font-size: 12.5px; letter-spacing: .01em; color: var(--ink-700); }
+body.is-login input[type="text"],
+body.is-login input[type="email"],
+body.is-login input[type="password"],
+body.is-login select {
+  min-height: 44px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: var(--ink-50);
+  border: 1px solid var(--ink-200);
+  transition: border-color .12s ease, box-shadow .12s ease, background .12s ease;
+}
+body.is-login input[type="text"]:hover,
+body.is-login input[type="email"]:hover,
+body.is-login input[type="password"]:hover,
+body.is-login select:hover { border-color: var(--brand-400); }
+body.is-login input[type="text"]:focus,
+body.is-login input[type="email"]:focus,
+body.is-login input[type="password"]:focus,
+body.is-login select:focus { background: #fff; }
+
+/* Buttons ----------------------------------------------------------------- */
+body.is-login .btn-lg { min-height: 46px; font-weight: 650; letter-spacing: .005em; }
+body.is-login .btn-outline { border-color: var(--ink-200); }
+
+/* Error message ----------------------------------------------------------- */
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: -4px 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--danger-50);
+  border: 1px solid #f4c2c2;
+  color: var(--danger-700);
+  font-size: 12.8px;
+  font-weight: 600;
+}
+.login-error::before { content: '⚠'; font-size: 14px; line-height: 1; }
+
+/* Responsive -------------------------------------------------------------- */
+@media (max-width: 900px) {
+  body.is-login .content { padding-top: 32px; }
+  .login-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
 }
