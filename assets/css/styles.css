@@ -699,3 +699,28 @@ select { appearance: none; background-image: linear-gradient(45deg, transparent 
   body { background: #fff; }
   .card { box-shadow: none; break-inside: avoid; }
 }
+
+/* --------------------- 10. LOGIN + STUDENT PORTAL ------------------------ */
+/* Additive only. These rules apply solely when <body> carries .is-login or
+   .is-student (set by the router for #/login and #/student). All existing
+   teacher styling is untouched. */
+body.is-login .sidebar,
+body.is-student .sidebar { display: none; }
+
+body.is-login .topbar .teacher-chip,
+body.is-login .topbar #todayPill,
+body.is-login .topbar #logoutBtn,
+body.is-student .topbar .teacher-chip,
+body.is-student .topbar #todayPill,
+body.is-student .topbar #logoutBtn { display: none; }
+
+body.is-login .content { width: 100%; max-width: 980px; margin: 0 auto; padding-top: 40px; }
+body.is-student .content { width: 100%; max-width: 1060px; margin: 0 auto; }
+
+.login-page { display: flex; justify-content: center; }
+.login-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; width: 100%; }
+.login-error { color: var(--danger-700); font-size: 12.8px; font-weight: 600; }
+
+@media (max-width: 760px) {
+  .login-grid { grid-template-columns: minmax(0, 1fr); }
+}

@@ -23,6 +23,9 @@ import * as enrollment from './views/enrollment.js';
 import * as analytics from './views/analytics.js';
 import * as reports from './views/reports.js';
 import * as settings from './views/settings.js';
+import * as login from './views/login.js';
+import * as studentPortal from './views/studentPortal.js';
+import { clearAllSessions } from './lib/session.js';
 
 /* --------------------------------- routes --------------------------------- */
 
@@ -37,6 +40,9 @@ const routes = [
   { pattern: ['analytics'], view: analytics, nav: 'analytics' },
   { pattern: ['reports'], view: reports, nav: 'reports' },
   { pattern: ['settings'], view: settings, nav: 'settings' },
+  // Login entry page + read-only student portal (separate area: 'student').
+  { pattern: ['login'], view: login, nav: null, area: 'login' },
+  { pattern: ['student'], view: studentPortal, nav: null, area: 'student' },
 ];
 
 function parseHash() {
@@ -102,6 +108,11 @@ function renderRoute() {
   setActiveNav(matched.route.nav);
   qs('#sidebar').classList.remove('is-open');
 
+  // Show/hide the teacher chrome for the standalone login + student portal.
+  // This only toggles body classes - no routing/redirect behaviour is affected.
+  document.body.classList.toggle('is-login', matched.route.area === 'login');
+  document.body.classList.toggle('is-student', matched.route.area === 'student');
+
   const host = qs('#view');
   host.replaceChildren();
   window.scrollTo({ top: 0, behavior: 'instant' in window ? 'instant' : 'auto' });
@@ -147,6 +158,18 @@ function boot() {
     qs('#sidebar').classList.toggle('is-open');
   });
 
+  // Teacher logout: clears the session and returns to the login page.
+  const logoutBtn = document.createElement('button');
+  logoutBtn.id = 'logoutBtn';
+  logoutBtn.type = 'button';
+  logoutBtn.className = 'btn btn-ghost btn-sm';
+  logoutBtn.textContent = 'Log out';
+  logoutBtn.addEventListener('click', () => {
+    clearAllSessions();
+    window.location.hash = '#/login';
+  });
+  qs('.topbar-actions')?.append(logoutBtn);
+
   qs('#modalClose').addEventListener('click', closeModal);
   qs('#modalBackdrop').addEventListener('click', (event) => {
     if (event.target === qs('#modalBackdrop')) closeModal();
@@ -173,7 +196,7 @@ function boot() {
     }
   });
 
-  if (!window.location.hash) navigate('/dashboard');
+  if (!window.location.hash) navigate('/login');
 
   // Small startup hint about the face library (non-blocking).
   window.addEventListener('load', () => {
