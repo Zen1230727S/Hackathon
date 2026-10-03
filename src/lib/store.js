@@ -36,6 +36,7 @@ function normalise(raw) {
   raw.sessions = Array.isArray(raw.sessions) ? raw.sessions : [];
   raw.attendance = Array.isArray(raw.attendance) ? raw.attendance : [];
   raw.activity = Array.isArray(raw.activity) ? raw.activity : [];
+  raw.notifications = Array.isArray(raw.notifications) ? raw.notifications : [];
   raw.settings = { lowAttendanceThreshold: DEFAULT_THRESHOLD, matchThreshold: 0.5, ...(raw.settings || {}) };
   raw.settings.teacher = raw.settings.teacher || { name: 'Teacher', email: 'teacher@demo.college' };
   return raw;
@@ -141,6 +142,13 @@ export function findAttendance(sessionId, studentId) {
 
 export function getActivity(limit = 12) {
   return [...getState().activity]
+    .sort((a, b) => (a.at < b.at ? 1 : -1))
+    .slice(0, limit);
+}
+
+/** Recent guardian absence notifications, newest first. */
+export function getNotifications(limit = 25) {
+  return [...(getState().notifications || [])]
     .sort((a, b) => (a.at < b.at ? 1 : -1))
     .slice(0, limit);
 }
@@ -320,7 +328,48 @@ function logActivity(type, message, extra = {}) {
   if (getState().activity.length > 200) getState().activity.length = 200;
 }
 
+/**
+ * Create a local/demo guardian absence notification. Purely additive: it stores
+ * its own record in state.notifications and never touches attendance data.
+ */
+function logNotification(record) {
+  const state = getState();
+  if (!Array.isArray(state.notifications)) state.notifications = [];
+  state.notifications.unshift({
+    id: uid('ntf'),
+    at: new Date().toISOString(),
+    type: 'absent',
+    ...record,
+  });
+  // Keep the list bounded.
+  if (state.notifications.length > 200) state.notifications.length = 200;
+}
+
 /* -------------------------------- mutations ------------------------------- */
+
+/**
+ * Build one guardian absence notification from data already on record.
+ * Read-only w.r.t. attendance - it only writes to state.notifications.
+ */
+function notifyGuardianAbsence(student, session, method = 'manual') {
+  const cls = getClass(student.classId);
+  const guardianPhone = String(student.guardianPhone || '').trim();
+  logNotification({
+    studentId: student.id,
+    sessionId: session.id,
+    studentName: student.name,
+    rollNo: student.rollNo,
+    className: cls?.name || '',
+    subject: cls?.subject || '',
+    sessionLabel: session.label || '',
+    date: session.date,
+    status: 'absent',
+    method,
+    guardianName: String(student.guardianName || '').trim() || null,
+    guardianPhone: guardianPhone || null,
+    hasGuardianContact: Boolean(guardianPhone),
+  });
+}
 
 /**
  * Record or update attendance for a student in a session.
@@ -351,6 +400,7 @@ export function markAttendance({ sessionId, studentId, status = 'present', metho
     logActivity(status === 'absent' ? 'absent' : 'present',
       `${student.name} changed to ${status}${method === 'face' ? ' via face recognition' : ' manually'}`,
       { studentId, sessionId });
+    if (status === 'absent') notifyGuardianAbsence(student, session, method);
     commit({ type: 'attendance' });
     return { ok: true, updated: true };
   }
@@ -369,6 +419,7 @@ export function markAttendance({ sessionId, studentId, status = 'present', metho
   logActivity(status === 'absent' ? 'absent' : (method === 'face' ? 'face' : 'present'),
     `${student.name} marked ${status}${method === 'face' ? ' via face recognition' : ' manually'}`,
     { studentId, sessionId });
+  if (status === 'absent') notifyGuardianAbsence(student, session, method);
   commit({ type: 'attendance' });
   return { ok: true, created: true };
 }
@@ -460,7 +511,7 @@ export function deleteSession(sessionId) {
 
 /* ------------------------------ student admin ----------------------------- */
 
-export function addStudent({ name, rollNo, classId, email = '', photo = null }) {
+export function addStudent({ name, rollNo, classId, email = '', photo = null, guardianName = '', guardianPhone = '' }) {
   const state = getState();
   const cleanName = String(name || '').trim();
   if (!cleanName || !classId) return { ok: false, reason: 'invalid' };
@@ -471,6 +522,8 @@ export function addStudent({ name, rollNo, classId, email = '', photo = null }) 
     rollNo: String(rollNo || '').trim() || `NEW-${state.students.length + 1}`,
     email: email || `${cleanName.split(' ')[0].toLowerCase()}@demo.college`,
     phone: '',
+    guardianName: String(guardianName || '').trim(),
+    guardianPhone: String(guardianPhone || '').trim(),
     photo,
     descriptor: null,
     descriptorSamples: 0,

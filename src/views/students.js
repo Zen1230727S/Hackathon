@@ -235,6 +235,15 @@ export function openStudentForm(studentId = null) {
         <label for="f-email">Email (optional)</label>
         <input id="f-email" type="email" value="${esc(student?.email || '')}" placeholder="student@demo.college" />
       </div>
+      <div class="field">
+        <label for="f-guardian-name">Guardian name (optional)</label>
+        <input id="f-guardian-name" type="text" value="${esc(student?.guardianName || '')}" placeholder="e.g. Ramesh Sharma" />
+      </div>
+      <div class="field">
+        <label for="f-guardian-phone">Guardian phone (optional)</label>
+        <input id="f-guardian-phone" type="text" value="${esc(student?.guardianPhone || '')}" placeholder="e.g. +91 90000 12345" />
+        <span class="hint">Used only to notify the guardian when this student is marked absent (demo, in-app only).</span>
+      </div>
     </div>`;
 
   const preview = el('div', { class: 'row' }, [
@@ -270,15 +279,17 @@ export function openStudentForm(studentId = null) {
     const rollNo = form.querySelector('#f-roll').value.trim();
     const classId = form.querySelector('#f-class').value;
     const email = form.querySelector('#f-email').value.trim();
+    const guardianName = form.querySelector('#f-guardian-name').value.trim();
+    const guardianPhone = form.querySelector('#f-guardian-phone').value.trim();
     if (!name || !rollNo) {
       toast('Missing details', 'Name and roll number are required.', 'warn');
       return;
     }
     if (student) {
-      updateStudent(student.id, { name, rollNo, classId, email });
+      updateStudent(student.id, { name, rollNo, classId, email, guardianName, guardianPhone });
       toast('Student updated', name, 'ok');
     } else {
-      const result = addStudent({ name, rollNo, classId, email, photo: avatarDataUri(name) });
+      const result = addStudent({ name, rollNo, classId, email, guardianName, guardianPhone, photo: avatarDataUri(name) });
       if (!result.ok) {
         toast('Could not add student', result.reason || 'Unknown error', 'danger');
         return;

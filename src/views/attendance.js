@@ -191,6 +191,7 @@ export function render({ query }) {
       if (result.updated) toast('Attendance updated', `${student?.name} is now marked ${status}.`, 'ok', 2200);
       else if (result.created) toast('Attendance recorded', `${student?.name} marked ${status}.`, 'ok', 2200);
       else if (result.removed) toast('Record cleared', `${student?.name} is unmarked.`, 'warn', 2200);
+      if (result.ok && status === 'absent') toast('Guardian notified', `${student?.name} absent.`, 'warn', 2600);
       refresh();
       return;
     }

@@ -376,6 +376,7 @@ export function render({ query }) {
         `${student?.name} marked ${status}${view.mode === 'sim' ? ' (simulated demo)' : ' via face recognition'}.`,
         'ok',
       );
+      if (status === 'absent') toast('Guardian notified', `${student?.name} absent.`, 'warn', 2600);
     }
     view.candidate = null;
     view.candidateHits = 0;
